@@ -68,9 +68,16 @@ jobs:
         working-directory: .
         run: |
           install -d -m 700 ~/.ssh
-          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          # Strip Windows line endings / stray spaces that break keys pasted from Windows.
+          printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' | sed 's/[[:space:]]*$//' > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          printf '%s\n' "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          printf '%s\n' "$VPS_KNOWN_HOSTS" | tr -d '\r' > ~/.ssh/known_hosts
+          # Fingerprint is public info; expected SHA256:3wcQFzS+rdfWh1VE3wLMusGzSfmrID7jrzu4BFjZo4M
+          if ! ssh-keygen -y -f ~/.ssh/deploy_key > /tmp/deploy_key.pub; then
+            echo "::error::VPS_SSH_KEY is not a valid private key. Paste the full contents of spacz_website_ci, including the BEGIN/END lines."
+            exit 1
+          fi
+          echo "Deploy key fingerprint: $(ssh-keygen -lf /tmp/deploy_key.pub)"
           cat >> ~/.ssh/config <<EOF
           Host vps
             HostName ${{ secrets.VPS_HOST }}
@@ -78,7 +85,11 @@ jobs:
             IdentityFile ~/.ssh/deploy_key
             IdentitiesOnly yes
             StrictHostKeyChecking yes
+            BatchMode yes
           EOF
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
 
       - name: Upload release
         working-directory: .
