@@ -48,7 +48,7 @@ export function Hero({ onSearch, onOpenSpace }: HeroProps) {
         <motion.div {...rise(0.05)} className="label flex flex-wrap items-center gap-x-3 gap-y-1 text-mute">
           <span className="text-ink">The study space platform</span>
           <span className="h-px w-8 bg-ink/25" aria-hidden="true" />
-          <span>You need · 17.43° N</span>
+          <span>India · 17.43° N</span>
         </motion.div>
 
         <h1 className="display mt-7 text-[54px] text-ink min-[390px]:text-[58px] sm:text-[84px] lg:whitespace-nowrap lg:text-[min(9.2vw,136px)]">
