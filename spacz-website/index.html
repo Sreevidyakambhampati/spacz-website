@@ -17,7 +17,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Dark first frame until React mounts the animated loader (replaced on render). -->
+    <div id="root"><div style="position:fixed;inset:0;background:#121418"></div></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

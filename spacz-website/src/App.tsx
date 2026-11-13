@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import { Navbar } from './components/Navbar'
 import { Footer } from './components/Footer'
 import { BookingDemo } from './components/BookingDemo'
+import { Loader } from './components/Loader'
 import { Hero } from './sections/Hero'
 import { Problem } from './sections/Problem'
 import { SpaceMatters } from './sections/SpaceMatters'
@@ -21,13 +22,16 @@ import type { StudySpace } from './data/studySpaces'
 export default function App() {
   const [area, setArea] = useState<string | null>(null)
   const [openSpace, setOpenSpace] = useState<StudySpace | null>(null)
+  const [ready, setReady] = useState(false)
   const close = useCallback(() => setOpenSpace(null), [])
+  const onLoaded = useCallback(() => setReady(true), [])
 
   return (
     <>
+      <Loader onDone={onLoaded} />
       <Navbar />
       <main id="main">
-        <Hero onSearch={setArea} onOpenSpace={setOpenSpace} />
+        <Hero onSearch={setArea} onOpenSpace={setOpenSpace} ready={ready} />
         <Problem />
         <SpaceMatters />
         <Experience />
