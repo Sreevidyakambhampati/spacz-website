@@ -19,7 +19,7 @@ export function Aspirants() {
             index="06"
             eyebrow="Built for aspirants"
             size="xl"
-            lines={['Your preparation', 'has a goal.', <span className="font-light text-ink/55">Your space should support it.</span>]}
+            lines={['Your preparation', 'has a goal.', <span key="l3" className="font-light text-ink/55">Your space should support it.</span>]}
           />
           <Reveal className="self-end lg:col-span-4" delay={0.1}>
             <p className="text-[17px] leading-[1.6] text-mute">

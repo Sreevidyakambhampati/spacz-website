@@ -23,7 +23,7 @@ export function Problem() {
           <RevealLines
             lines={[
               'Studying is hard enough.',
-              <span className="font-light text-ink/55">Finding the right place shouldn’t be.</span>,
+              <span key="l2" className="font-light text-ink/55">Finding the right place shouldn’t be.</span>,
             ]}
           />
         </h2>

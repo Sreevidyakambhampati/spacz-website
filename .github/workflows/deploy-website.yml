@@ -1,0 +1,104 @@
+# Builds the SPACZ website (spacz-website/) and deploys it to the Hostinger VPS.
+#
+# Runs on every push to main that touches the website, or manually from the Actions tab.
+# Each deploy is uploaded to /var/www/spacz-website/releases/<timestamp>-<sha> and the
+# `current` symlink (served by nginx) is switched to it. The last 5 releases are kept.
+#
+# Required repository secrets (Settings -> Secrets and variables -> Actions):
+#   VPS_HOST         200.234.36.196
+#   VPS_USER         deploy
+#   VPS_SSH_KEY      private key whose public half is in /home/deploy/.ssh/authorized_keys
+#   VPS_KNOWN_HOSTS  the VPS host key line (pins the server's identity)
+
+name: Deploy website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "spacz-website/**"
+      - ".github/workflows/deploy-website.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-website
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: spacz-website
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: spacz-website/package-lock.json
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: spacz-website/dist
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      BASE: /var/www/spacz-website
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Set up SSH
+        working-directory: .
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          cat >> ~/.ssh/config <<EOF
+          Host vps
+            HostName ${{ secrets.VPS_HOST }}
+            User ${{ secrets.VPS_USER }}
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+          EOF
+
+      - name: Upload release
+        working-directory: .
+        run: |
+          RELEASE="$(date -u +%Y%m%d-%H%M%S)-${GITHUB_SHA::7}"
+          echo "RELEASE=$RELEASE" >> "$GITHUB_ENV"
+          rsync -az --chmod=D755,F644 dist/ "vps:$BASE/releases/$RELEASE/"
+
+      - name: Switch live site to new release
+        working-directory: .
+        run: |
+          ssh vps "set -e
+            test -f $BASE/releases/$RELEASE/index.html
+            ln -sfn $BASE/releases/$RELEASE $BASE/current.tmp
+            mv -T $BASE/current.tmp $BASE/current
+            cd $BASE/releases && ls -1dt */ | tail -n +6 | xargs -r rm -rf
+            echo Live: \$(readlink $BASE/current)"
+
+      - name: Smoke test
+        working-directory: .
+        run: |
+          curl -fsS --retry 3 --retry-delay 2 "http://${{ secrets.VPS_HOST }}/" | grep -q "<title>SPACZ"
+          echo "Site is up with release $RELEASE"
