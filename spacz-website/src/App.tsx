@@ -25,7 +25,7 @@ export default function App() {
       <Loader onDone={onLoaded} />
       <Navbar />
       <main id="main">
-        <Hero onOpenSpace={setOpenSpace} ready={ready} />
+        <Hero ready={ready} />
         <Problem />
         <SpaceMatters />
         <Experience />
