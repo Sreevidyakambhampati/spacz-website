@@ -2,6 +2,7 @@ import { SectionHeading } from '../components/SectionHeading'
 import { Reveal } from '../components/Reveal'
 import { Button } from '../components/Button'
 import { OwnerDashboard } from '../components/OwnerDashboard'
+import { listYourHallHref } from '../lib/contact'
 
 const manage = [
   'Property information',
@@ -23,7 +24,7 @@ export function Owners() {
             id="owners-title"
             tone="paper"
             className="lg:col-span-7"
-            index="08"
+            index="05"
             eyebrow="For study halls"
             size="xl"
             lines={['Your study hall', 'deserves more than', 'empty seats.']}
@@ -47,7 +48,7 @@ export function Owners() {
             </Reveal>
             <Reveal delay={0.15}>
               <div className="mt-9">
-                <Button href="mailto:support@spacz.com?subject=List%20my%20study%20hall%20on%20SPACZ" size="lg">
+                <Button href={listYourHallHref} size="lg">
                   List Your Study Hall
                 </Button>
               </div>

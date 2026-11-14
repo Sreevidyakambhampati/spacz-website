@@ -3,6 +3,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { Photo } from '../components/Photo'
 import { Button } from '../components/Button'
 import { RevealLines, Reveal } from '../components/Reveal'
+import { studySpaceInquiryHref } from '../lib/contact'
 
 export function FinalCTA() {
   const ref = useRef<HTMLElement>(null)
@@ -14,7 +15,7 @@ export function FinalCTA() {
     <section ref={ref} data-nav="dark" className="relative overflow-hidden bg-ink text-paper" aria-labelledby="cta-title">
       <div className="grid lg:grid-cols-2">
         <div className="relative order-2 flex flex-col justify-center px-5 py-24 sm:px-10 sm:py-32 lg:order-1 lg:py-40 lg:pl-[max(56px,calc((100vw-1320px)/2+56px))] lg:pr-16">
-          <div className="label text-mute-dark">13 — Begin</div>
+          <div className="label text-mute-dark">08 — Begin</div>
           <h2 id="cta-title" className="headline mt-8 text-[42px] sm:text-[60px] lg:text-[50px] xl:text-[68px]">
             <RevealLines lines={['Your next productive', 'hour starts with', 'the right space.']} />
           </h2>
@@ -23,7 +24,7 @@ export function FinalCTA() {
               Find a study space that fits your routine, your location and your preparation.
             </p>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              <Button href="#explore" size="lg">
+              <Button href={studySpaceInquiryHref} size="lg">
                 Find Your Study Space
               </Button>
               <Button href="#owners" size="lg" variant="secondary-dark">

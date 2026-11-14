@@ -2,6 +2,7 @@ import { SectionHeading } from '../components/SectionHeading'
 import { FAQ } from '../components/FAQ'
 import { Reveal } from '../components/Reveal'
 import { faqs } from '../data/faqs'
+import { SUPPORT_EMAIL } from '../lib/contact'
 
 export function FAQSection() {
   return (
@@ -9,12 +10,12 @@ export function FAQSection() {
       <div className="container-x grid gap-14 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-4">
           <div className="lg:sticky lg:top-28">
-            <SectionHeading id="faq-title" index="12" eyebrow="Questions" lines={['Asked,', 'answered.']} />
+            <SectionHeading id="faq-title" index="07" eyebrow="Questions" lines={['Asked,', 'answered.']} />
             <Reveal delay={0.1}>
               <p className="mt-6 max-w-[20rem] text-[16px] leading-[1.6] text-mute">
                 Something else on your mind? Write to{' '}
-                <a href="mailto:support@spacz.com" className="text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink">
-                  support@spacz.com
+                <a href={`mailto:${SUPPORT_EMAIL}`} className="text-ink underline decoration-ink/30 underline-offset-4 hover:decoration-ink">
+                  {SUPPORT_EMAIL}
                 </a>
                 .
               </p>

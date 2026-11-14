@@ -38,7 +38,7 @@ export function SeatMapSection({ onOpen }: { onOpen: (s: StudySpace) => void }) 
             id="seatmap-title"
             tone="paper"
             className="lg:col-span-7"
-            index="05"
+            index="04"
             eyebrow="Seat plan"
             lines={['Choose the desk,', 'not just the hall.']}
           />

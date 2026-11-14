@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Logo } from './Logo'
 import { Button } from './Button'
+import { studySpaceInquiryHref } from '../lib/contact'
 
-export const navLinks = [
-  { label: 'Platform', href: '#platform' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'For Aspirants', href: '#aspirants' },
-  { label: 'For Study Halls', href: '#owners' },
+// In page order; every href is a section id that is rendered in App.tsx.
+const navLinks = [
   { label: 'About', href: '#about' },
+  { label: 'Platform', href: '#platform' },
+  { label: 'Seat Plan', href: '#seat-map' },
+  { label: 'For Study Halls', href: '#owners' },
+  { label: 'FAQ', href: '#faq' },
 ]
 
 export function Navbar() {
@@ -100,7 +102,7 @@ export function Navbar() {
             >
               List Your Study Hall
             </a>
-            <Button href="#explore" className={scrolled ? '!h-9 !px-4' : ''}>
+            <Button href={studySpaceInquiryHref} className={scrolled ? '!h-9 !px-4' : ''}>
               Find a Study Space
             </Button>
           </div>
@@ -156,7 +158,7 @@ export function Navbar() {
               ))}
             </ul>
             <div className="relative mt-auto grid gap-3">
-              <Button href="#explore" size="lg" onClick={() => setOpen(false)}>
+              <Button href={studySpaceInquiryHref} size="lg" onClick={() => setOpen(false)}>
                 Find a Study Space
               </Button>
               <Button href="#owners" size="lg" variant="secondary-dark" onClick={() => setOpen(false)}>

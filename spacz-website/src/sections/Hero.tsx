@@ -9,9 +9,10 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion'
-import { ArrowUpRight, CalendarDays, Check, MapPin, Search, Timer } from 'lucide-react'
+import { ArrowUpRight, CalendarDays, Check, Mail, MapPin, Timer } from 'lucide-react'
 import { Button } from '../components/Button'
 import { Photo } from '../components/Photo'
+import { STUDY_SPACE_INQUIRY_SUBJECT, mailto, studySpaceInquiryHref } from '../lib/contact'
 import { studySpaces } from '../data/studySpaces'
 import type { StudySpace } from '../data/studySpaces'
 
@@ -22,13 +23,12 @@ const perks = ['See the seat layout', '15 & 30-day passes', 'Open-late & 24×7 h
 const steps = ['Find a hall', 'Pick a desk', 'Choose your pass']
 
 interface HeroProps {
-  onSearch: (area: string) => void
   onOpenSpace: (space: StudySpace) => void
   /** false while the intro loader is on screen; entrance animations wait for it */
   ready?: boolean
 }
 
-export function Hero({ onSearch, onOpenSpace, ready = true }: HeroProps) {
+export function Hero({ onOpenSpace, ready = true }: HeroProps) {
   const reduce = useReducedMotion()
   const ref = useRef<HTMLElement>(null)
 
@@ -60,14 +60,16 @@ export function Hero({ onSearch, onOpenSpace, ready = true }: HeroProps) {
     return () => clearInterval(id)
   }, [reduce, ready])
 
-  // Search
+  // Inquiry — the chosen preferences are sent to SPACZ by email
   const [area, setArea] = useState('Ameerpet')
   const [when, setWhen] = useState('Today')
   const [duration, setDuration] = useState('30 days')
   const submit = (e: FormEvent) => {
     e.preventDefault()
-    onSearch(area)
-    document.getElementById('explore')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' })
+    window.location.href = mailto(
+      STUDY_SPACE_INQUIRY_SUBJECT,
+      `Hi SPACZ team,\n\nI'm looking for a study space.\n\nArea: ${area}\nFrom: ${when}\nDuration: ${duration}\n\nThanks!`,
+    )
   }
 
   const show = ready ? 'show' : 'hidden'
@@ -102,8 +104,6 @@ export function Hero({ onSearch, onOpenSpace, ready = true }: HeroProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/85 to-ink/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/60" />
       </motion.div>
-
-      <div className="plan-grid-dark pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_at_30%_40%,black,transparent_75%)]" aria-hidden="true" />
 
       {/* Drifting light */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
@@ -185,7 +185,7 @@ export function Hero({ onSearch, onOpenSpace, ready = true }: HeroProps) {
             </motion.p>
 
             <motion.div {...rise(0.5)} className="mt-9 flex flex-col gap-3 min-[460px]:flex-row">
-              <Button href="#explore" size="lg">
+              <Button href={studySpaceInquiryHref} size="lg">
                 Find Your Study Space
               </Button>
               <Button href="#owners" size="lg" variant="secondary-dark">
@@ -294,7 +294,7 @@ export function Hero({ onSearch, onOpenSpace, ready = true }: HeroProps) {
           {...rise(0.75)}
           onSubmit={submit}
           className="relative mt-14 grid overflow-hidden rounded-2xl border border-paper/15 bg-paper/[0.07] p-1.5 shadow-[0_30px_80px_-30px_rgb(0_0_0/0.7)] backdrop-blur-xl md:grid-cols-[1.3fr_1fr_1fr_auto] lg:mt-16"
-          aria-label="Search study spaces (demo)"
+          aria-label="Request a study space by email"
         >
           <SearchField icon={MapPin} label="Where" id="hero-area" value={area} onChange={setArea} options={areas} />
           <SearchField icon={CalendarDays} label="From" id="hero-when" value={when} onChange={setWhen} options={['Today', 'Tomorrow', 'Next Monday']} />
@@ -307,8 +307,8 @@ export function Hero({ onSearch, onOpenSpace, ready = true }: HeroProps) {
               className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 ease-calm group-hover:translate-x-full"
               aria-hidden="true"
             />
-            <Search className="relative h-4 w-4" aria-hidden="true" />
-            <span className="relative">Search spaces</span>
+            <Mail className="relative h-4 w-4" aria-hidden="true" />
+            <span className="relative">Send inquiry</span>
           </button>
         </motion.form>
       </motion.div>

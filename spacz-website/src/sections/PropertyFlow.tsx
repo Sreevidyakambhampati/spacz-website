@@ -110,7 +110,7 @@ export function PropertyFlow() {
             id="property-title"
             tone="paper"
             className="lg:col-span-7"
-            index="09"
+            index="06"
             eyebrow="Property setup"
             lines={['From a physical hall', 'to a live digital space.']}
           />
